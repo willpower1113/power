@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.power.parts.base.delegate.FragmentLifecycleable;
 import com.power.parts.base.delegate.IFragment;
@@ -17,7 +18,6 @@ import com.power.parts.base.delegate.IPresenter;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.simple.eventbus.EventBus;
-
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -107,7 +107,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
      * @param message 消息内容, 不能为 {@code null}
      */
     public void showMessage(@NonNull String message) {
-
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -117,7 +117,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
      * @param intent {@code intent} 不能为 {@code null}
      */
     public void launchActivity(@NonNull Intent intent) {
-
+        startActivity(intent);
     }
 
 
@@ -125,6 +125,6 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
      * 杀死自己
      */
     public void killMyself() {
-
+        getActivity().finish();
     }
 }
