@@ -1,18 +1,19 @@
 package com.power.parts.base;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
-import com.power.parts.R;
 import com.power.parts.base.delegate.ActivityLifecycleable;
 import com.power.parts.base.delegate.IActivity;
 import com.power.parts.base.delegate.IPresenter;
-import com.power.parts.util.StatusBarUtil;
+import com.power.parts.util.LoadingHelper;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 
 import org.simple.eventbus.EventBus;
@@ -32,6 +33,7 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
     private Unbinder mUnbinder;
     protected Context context;
     protected Activity activity;
+    private Dialog loading;
 
     @Nullable
     protected P mPresenter;//如果当前页面逻辑简单, Presenter 可以为 null
@@ -81,6 +83,10 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
             mPresenter.onDestroy();//释放资源
         }
         this.mPresenter = null;
+        if (loading != null) {
+            hideLoading();
+            loading = null;
+        }
     }
 
     /**
@@ -109,7 +115,10 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
      * 显示加载
      */
     public void showLoading() {
-
+        if (loading == null) {
+            loading = LoadingHelper.loading(context, false);
+        }
+        loading.show();
     }
 
 
@@ -117,7 +126,9 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
      * 隐藏加载
      */
     public void hideLoading() {
-
+        if (loading != null) {
+            loading.dismiss();
+        }
     }
 
 
@@ -127,7 +138,7 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
      * @param message 消息内容, 不能为 {@code null}
      */
     public void showMessage(@NonNull String message) {
-
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -137,7 +148,7 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
      * @param intent {@code intent} 不能为 {@code null}
      */
     public void launchActivity(@NonNull Intent intent) {
-
+        startActivity(intent);
     }
 
 
@@ -145,7 +156,7 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
      * 杀死自己
      */
     public void killMyself() {
-
+        finish();
     }
 
 }

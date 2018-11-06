@@ -1,12 +1,14 @@
 package com.power.parts.base;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import com.power.parts.base.delegate.FragmentLifecycleable;
 import com.power.parts.base.delegate.IFragment;
 import com.power.parts.base.delegate.IPresenter;
+import com.power.parts.util.LoadingHelper;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.simple.eventbus.EventBus;
@@ -35,6 +38,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     protected View view;
     Unbinder unbinder;
 
+    private Dialog loading;
     protected Context context;
     protected Activity activity;
 
@@ -50,8 +54,9 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     @Nullable
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (initView() != 0) {
+            Log.e(TAG, "onCreateView: ");
             view = inflater.inflate(initView(), container, false);
-            unbinder = ButterKnife.bind(view);
+            unbinder = ButterKnife.bind(this,view);
         }
         this.context = getContext();
         this.activity = getActivity();
@@ -74,6 +79,10 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
         if (useEventBus()) {//如果要使用 EventBus 请将此方法返回 true
             EventBus.getDefault().unregister(this);//解除注册 EventBus
         }
+        if (loading != null) {
+            hideLoading();
+            loading = null;
+        }
     }
 
     /**
@@ -89,7 +98,10 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
      * 显示加载
      */
     public void showLoading() {
-
+        if (loading == null) {
+            loading = LoadingHelper.loading(context, false);
+        }
+        loading.show();
     }
 
 
@@ -97,7 +109,9 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
      * 隐藏加载
      */
     public void hideLoading() {
-
+        if (loading != null) {
+            loading.dismiss();
+        }
     }
 
 

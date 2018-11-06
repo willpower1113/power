@@ -52,9 +52,5 @@ dependencies {
     implementation rootProject.ext.dependencies['retrofit-adapter-rxjava2']
     implementation rootProject.ext.dependencies['okhttp3-logging-interceptor']
     implementation rootProject.ext.dependencies['roundedimageview']
-//    implementation rootProject.ext.dependencies['dagger2']
-//    implementation rootProject.ext.dependencies['dagger2-android']
-//    implementation rootProject.ext.dependencies['dagger2-android-support']
-//    annotationProcessor rootProject.ext.dependencies['dagger2-compiler']
-//    annotationProcessor rootProject.ext.dependencies['dagger2-android-processor']
+    implementation rootProject.ext.dependencies['timber']//日志
 }
